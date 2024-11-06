@@ -1,2 +1,2 @@
-# spack-plugins
+# SNL-Spack-Tools
 Common tooling for using Spack
