@@ -20,7 +20,6 @@ jobs:
       matrix:
         python-version: [3.8, 3.9, 3.12]
         spack-version: [v0.20.3, v0.21.2, v0.22.0, v0.22.1, develop]
-        extension: [ manager ]
         exclude:
           - python-version: 3.12
             spack-version: v0.20.3
@@ -40,11 +39,8 @@ jobs:
         path: spack
     - name: Setup Spack ${{ matrix.spack-version }}
       run: echo "$PWD/spack/bin" >> "$GITHUB_PATH"
-    - name: Install extension
-      run: |
-        spack config add "config:extensions:[$GITHUB_WORKSPACE/extensions/spack-${{ matrix.extension }}]"
-        spack ${{ matrix.extension }} --help
     - name: Run unit tests
       run: |
         . spack/share/spack/setup-env.sh
-        spack unit-test --extension ${{ matrix.extension }}
+        cd extensions
+        ./testing.sh
