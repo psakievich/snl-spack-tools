@@ -1,5 +1,11 @@
+_clear_shell_function(){
+  # Check if the original function exists and cache it
+  if declare -f "$1" > /dev/null; then
+    unset -f "$1"
+  fi
+}
+
 function unload-spack(){
- _nested_function_reset
   help_string="
 -------------------------------------
 shell-function:: unload-spack()
@@ -34,7 +40,7 @@ The shell-specific arguments for this function are:
   unset SPACK_ENV
   unset SPACK_USER_CACHE_PATH
   unset SPACK_USER_CONFIG_PATH
-  clear_shell_function "spack"
-  clear_shell_function "_spack_shell_wrapper"
+  _clear_shell_function "spack"
+  _clear_shell_function "_spack_shell_wrapper"
 }
 
