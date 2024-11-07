@@ -1,0 +1,3 @@
+[submodule "extensions/spack-manager"]
+	path = extensions/spack-manager
+	url = https://github.com/sandialabs/spack-manager.git
