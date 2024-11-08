@@ -1,0 +1,46 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+  schedule:
+  - cron: "0 8 * * *"
+
+jobs:
+  extension-unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, 3.12]
+        spack-version: [v0.20.3, v0.21.2, v0.22.0, v0.22.1, develop]
+        exclude:
+          - python-version: 3.12
+            spack-version: v0.20.3
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Checkout Spack
+      uses: actions/checkout@v4
+      with:
+        repository: spack/spack
+        ref: ${{ matrix.spack-version }}
+        path: spack
+    - name: Setup Spack ${{ matrix.spack-version }}
+      run: echo "$PWD/spack/bin" >> "$GITHUB_PATH"
+    - name: Run unit tests
+      run: |
+        . spack/share/spack/setup-env.sh
+        cd extensions
+        ./testing.sh
